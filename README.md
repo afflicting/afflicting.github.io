@@ -6,8 +6,8 @@
 
 Current Features:
 
-* Typewriter Effect on Tab & Webpage
 * Own customization for icons & links
+* Typewriter Effect on Tab & Webpage
 * Music & Volume Slider
 * Embeds in Discord
 
