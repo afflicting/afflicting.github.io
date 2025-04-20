@@ -7,8 +7,8 @@
 Current Features:
 
 * Typewriter Effect on Tab & Webpage
-* Music & Volume Slider
 * Own customization for icons & links
+* Music & Volume Slider
 * Embeds in Discord
 
 #### [Credits to sh1nyx for the Song](https://soundcloud.com/sh1nyx/sh1ny-yr-gaze-puts-me-in-a-trance)
