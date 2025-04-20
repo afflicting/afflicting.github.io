@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+    <meta property="og:title" content="afflicting">
+    <meta property="og:description" content="made by afflict">
+    <meta property="og:image" content="https://avatars.githubusercontent.com/u/180092300?v=4">
+    <meta property="og:url" content="https://afflicting.github.io">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="https://afflicting.github.io/int/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://afflicting.github.io/int/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="https://afflicting.github.io/int/apple-touch-icon.png" sizes="180x180">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            background: url('https://preview.colorkit.co/color/000000.png') no-repeat center center fixed;
+            background-size: cover;
+            pointer-events: none;
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 1;
+            pointer-events: auto;
+        }
+
+        .profile {
+            margin-bottom: 10px;
+        }
+
+        .profile-pic {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            position: relative;
+            z-index: 2;
+        }
+
+        .discord-presence {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .typing-effect {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            height: 50px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .social-icon {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .steam {
+            background-image: url('https://raw.githubusercontent.com/afflicting/afflicting.github.io/main/social/steam.png');
+        }
+
+        .github {
+            background-image: url('https://raw.githubusercontent.com/afflicting/afflicting.github.io/main/social/git.png');
+        }
+
+        .lastfm {
+            background-image: url('https://raw.githubusercontent.com/afflicting/afflicting.github.io/main/social/lastfm.png');
+        }
+
+        .blinking-cursor {
+            display: inline-block;
+            width: 8px;
+            background-color: white;
+            animation: blink 0.8s linear infinite;
+            margin-left: 3px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 400px;
+            border-radius: 20px; 
+            background-color: rgba(128, 128, 128, 0);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .volume-slider {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 150px;
+            z-index: 3;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+   <audio id="background-music" src="https://raw.githubusercontent.com/afflicting/afflicting.github.io/main/int/x.mp3" preload="auto" loop></audio>
+
+    <div class="container">
+        <div class="typing-effect" id="typing-effect"></div>
+        <div class="profile">
+            <img src="https://avatars.githubusercontent.com/u/180092300?v=4" alt="Profile Picture" class="profile-pic">
+        </div>
+
+        <div class="links">
+            <a href="https://open.spotify.com/user/uf37kh8nlca9o7tgbyjnv439o" class="social-icon spotify" target="_blank"></a>
+            <a href="https://github.com/afflicting" class="social-icon github" target="_blank"></a>
+            <a href="https://last.fm/user/repped" class="social-icon lastfm" target="_blank"></a>
+        </div>
+        <canvas id="overlay-canvas"></canvas>
+    </div>
+
+    <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1">
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var music = document.getElementById('background-music');
+
+        music.play().catch(function(error) {
+            console.log('Playback failed: ' + error);
+        });
+
+        var volumeSlider = document.getElementById('volume-slider');
+
+        var savedVolume = localStorage.getItem('volume') || 1;
+        music.volume = savedVolume;
+        volumeSlider.value = savedVolume;
+
+        volumeSlider.addEventListener('input', function () {
+            var volumeValue = volumeSlider.value;
+            music.volume = volumeValue;
+            localStorage.setItem('volume', volumeValue);
+        });
+
+        var typingElement = document.getElementById('typing-effect');
+        var texts = ["made by afflict", "open source"];
+        var currentTextIndex = 0;
+        var currentIndex = 0;
+        var deleting = false;
+
+        function updateText(content) {
+            typingElement.innerHTML = content + '<span class="blinking-cursor">|</span>';
+        }
+
+        function typeText() {
+            var currentText = texts[currentTextIndex];
+
+            if (!deleting) {
+                if (currentIndex < currentText.length) {
+                    updateText(currentText.substring(0, currentIndex + 1));
+                    currentIndex++;
+                    setTimeout(typeText, 150);
+                } else {
+                    setTimeout(function () {
+                        deleting = true;
+                        setTimeout(typeText, 100);
+                    }, 2000);
+                }
+            } else {
+                if (currentIndex > 0) {
+                    updateText(currentText.substring(0, currentIndex - 1));
+                    currentIndex--;
+                    setTimeout(typeText, 100);
+                } else {
+                    deleting = false;
+                    currentTextIndex = (currentTextIndex + 1) % texts.length;
+                    setTimeout(typeText, 500);
+                }
+            }
+        }
+
+        typeText();
+
+        var titleElement = "afflicting";
+        var titleIndex = 0;
+        var titleDeleting = false;
+
+        function updateTitle() {
+            document.title = '@' + titleElement.substring(0, titleIndex);
+        }
+
+        function typeTitle() {
+            if (!titleDeleting) {
+                if (titleIndex < titleElement.length) {
+                    titleIndex++;
+                    updateTitle();
+                    setTimeout(typeTitle, 150);
+                } else {
+                    setTimeout(function () {
+                        titleDeleting = true;
+                        setTimeout(typeTitle, 100);
+                    }, 2000);
+                }
+            } else {
+                if (titleIndex > 0) {
+                    titleIndex--;
+                    updateTitle();
+                    setTimeout(typeTitle, 100);
+                } else {
+                    titleDeleting = false;
+                    setTimeout(typeTitle, 500);
+                }
+            }
+        }
+
+        typeTitle();
+    });
+</script>
