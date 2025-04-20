@@ -82,8 +82,8 @@
             background-repeat: no-repeat;
         }
 
-        .steam {
-            background-image: url('https://raw.githubusercontent.com/afflicting/afflicting.github.io/main/social/steam.png');
+        .spotify {
+            background-image: url('https://raw.githubusercontent.com/afflicting/afflicting.github.io/main/social/spotify.png');
         }
 
         .github {
